@@ -23,10 +23,1002 @@ class Transacao(db.Model):
     mes = db.Column(db.String(20), nullable=False)
     status = db.Column(db.String(20), default='A RECEBER')
 
-# Dados Iniciais da Planilha (serão inseridos via script)
-INITIAL_DATA = []
-
-# Rotas da API
+# Dados Iniciais da Planilha (serão inseridos via script)INITIAL_DATA = [
+  {
+    "categoria": "Tributos Igreja",
+    "valor": 0.0,
+    "tipo": "DESPESA",
+    "mes": "JANEIRO",
+    "status": "A RECEBER"
+  },
+  {
+    "categoria": "Aluguel",
+    "valor": 0.0,
+    "tipo": "DESPESA",
+    "mes": "JANEIRO",
+    "status": "A RECEBER"
+  },
+  {
+    "categoria": "Plano de Saúde / Remedios",
+    "valor": 0.0,
+    "tipo": "DESPESA",
+    "mes": "JANEIRO",
+    "status": "A RECEBER"
+  },
+  {
+    "categoria": "Contas Agua / Luz / Internet",
+    "valor": 0.0,
+    "tipo": "DESPESA",
+    "mes": "JANEIRO",
+    "status": "A RECEBER"
+  },
+  {
+    "categoria": "Cartão de Credito",
+    "valor": 0.0,
+    "tipo": "DESPESA",
+    "mes": "JANEIRO",
+    "status": "A RECEBER"
+  },
+  {
+    "categoria": "Pagamento Amor",
+    "valor": 0.0,
+    "tipo": "DESPESA",
+    "mes": "JANEIRO",
+    "status": "A RECEBER"
+  },
+  {
+    "categoria": "Transporte",
+    "valor": 0.0,
+    "tipo": "DESPESA",
+    "mes": "JANEIRO",
+    "status": "A RECEBER"
+  },
+  {
+    "categoria": "Emprestimo Cartão",
+    "valor": 0.0,
+    "tipo": "DESPESA",
+    "mes": "JANEIRO",
+    "status": "A RECEBER"
+  },
+  {
+    "categoria": "Viagens",
+    "valor": 0.0,
+    "tipo": "DESPESA",
+    "mes": "JANEIRO",
+    "status": "A RECEBER"
+  },
+  {
+    "categoria": "Outros Gastos",
+    "valor": 0.0,
+    "tipo": "DESPESA",
+    "mes": "JANEIRO",
+    "status": "A RECEBER"
+  },
+  {
+    "categoria": "Alimentação",
+    "valor": 0.0,
+    "tipo": "DESPESA",
+    "mes": "JANEIRO",
+    "status": "A RECEBER"
+  },
+  {
+    "categoria": "Investimentos",
+    "valor": 0.0,
+    "tipo": "DESPESA",
+    "mes": "JANEIRO",
+    "status": "A RECEBER"
+  },
+  {
+    "categoria": "Carro",
+    "valor": 0.0,
+    "tipo": "DESPESA",
+    "mes": "JANEIRO",
+    "status": "A RECEBER"
+  },
+  {
+    "categoria": "Salario",
+    "valor": 6000.0,
+    "tipo": "RECEITA",
+    "mes": "JULHO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Salario",
+    "valor": 6000.0,
+    "tipo": "RECEITA",
+    "mes": "AGOSTO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Salario",
+    "valor": 6000.0,
+    "tipo": "RECEITA",
+    "mes": "SETEMBRO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Salario",
+    "valor": 6000.0,
+    "tipo": "RECEITA",
+    "mes": "OUTUBRO",
+    "status": "A RECEBER"
+  },
+  {
+    "categoria": "Salario",
+    "valor": 6000.0,
+    "tipo": "RECEITA",
+    "mes": "NOVEMBRO",
+    "status": "A RECEBER"
+  },
+  {
+    "categoria": "Bonificação",
+    "valor": 3000.0,
+    "tipo": "RECEITA",
+    "mes": "JULHO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Bonificação",
+    "valor": 3000.0,
+    "tipo": "RECEITA",
+    "mes": "AGOSTO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Bonificação",
+    "valor": 3000.0,
+    "tipo": "RECEITA",
+    "mes": "SETEMBRO",
+    "status": "A RECEBER"
+  },
+  {
+    "categoria": "Bonificação",
+    "valor": 3000.0,
+    "tipo": "RECEITA",
+    "mes": "OUTUBRO",
+    "status": "A RECEBER"
+  },
+  {
+    "categoria": "Bonificação",
+    "valor": 3000.0,
+    "tipo": "RECEITA",
+    "mes": "NOVEMBRO",
+    "status": "A RECEBER"
+  },
+  {
+    "categoria": "Dizimos",
+    "valor": 184.0,
+    "tipo": "DESPESA",
+    "mes": "JULHO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Dizimos",
+    "valor": 184.0,
+    "tipo": "DESPESA",
+    "mes": "AGOSTO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Dizimos",
+    "valor": 184.0,
+    "tipo": "DESPESA",
+    "mes": "SETEMBRO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Dizimos",
+    "valor": 184.0,
+    "tipo": "DESPESA",
+    "mes": "OUTUBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Dizimos",
+    "valor": 184.0,
+    "tipo": "DESPESA",
+    "mes": "NOVEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Primicias",
+    "valor": 532.0,
+    "tipo": "DESPESA",
+    "mes": "JULHO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Primicias",
+    "valor": 532.0,
+    "tipo": "DESPESA",
+    "mes": "AGOSTO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Primicias",
+    "valor": 532.0,
+    "tipo": "DESPESA",
+    "mes": "SETEMBRO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Primicias",
+    "valor": 532.0,
+    "tipo": "DESPESA",
+    "mes": "OUTUBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Primicias",
+    "valor": 532.0,
+    "tipo": "DESPESA",
+    "mes": "NOVEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Ofertas",
+    "valor": 55.0,
+    "tipo": "DESPESA",
+    "mes": "JULHO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Ofertas",
+    "valor": 55.0,
+    "tipo": "DESPESA",
+    "mes": "AGOSTO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Ofertas",
+    "valor": 55.0,
+    "tipo": "DESPESA",
+    "mes": "SETEMBRO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Ofertas",
+    "valor": 55.0,
+    "tipo": "DESPESA",
+    "mes": "OUTUBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Ofertas",
+    "valor": 55.0,
+    "tipo": "DESPESA",
+    "mes": "NOVEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "investimentos",
+    "valor": 50.0,
+    "tipo": "DESPESA",
+    "mes": "AGOSTO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "investimentos",
+    "valor": 373.0,
+    "tipo": "DESPESA",
+    "mes": "SETEMBRO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "investimentos",
+    "valor": 373.0,
+    "tipo": "DESPESA",
+    "mes": "OUTUBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "investimentos",
+    "valor": 373.0,
+    "tipo": "DESPESA",
+    "mes": "NOVEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Aluguel",
+    "valor": 1050.0,
+    "tipo": "DESPESA",
+    "mes": "JULHO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Aluguel",
+    "valor": 1050.0,
+    "tipo": "DESPESA",
+    "mes": "AGOSTO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Aluguel",
+    "valor": 1050.0,
+    "tipo": "DESPESA",
+    "mes": "SETEMBRO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Aluguel",
+    "valor": 1050.0,
+    "tipo": "DESPESA",
+    "mes": "OUTUBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Aluguel",
+    "valor": 1050.0,
+    "tipo": "DESPESA",
+    "mes": "NOVEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "luz",
+    "valor": 121.05,
+    "tipo": "DESPESA",
+    "mes": "JULHO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "luz",
+    "valor": 153.31,
+    "tipo": "DESPESA",
+    "mes": "AGOSTO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "luz",
+    "valor": 163.54,
+    "tipo": "DESPESA",
+    "mes": "SETEMBRO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "luz",
+    "valor": 163.54,
+    "tipo": "DESPESA",
+    "mes": "OUTUBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "luz",
+    "valor": 163.54,
+    "tipo": "DESPESA",
+    "mes": "NOVEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "água/esgoto",
+    "valor": 338.55,
+    "tipo": "DESPESA",
+    "mes": "JULHO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "água/esgoto",
+    "valor": 110.0,
+    "tipo": "DESPESA",
+    "mes": "AGOSTO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "água/esgoto",
+    "valor": 110.0,
+    "tipo": "DESPESA",
+    "mes": "SETEMBRO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "água/esgoto",
+    "valor": 110.0,
+    "tipo": "DESPESA",
+    "mes": "OUTUBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "água/esgoto",
+    "valor": 110.0,
+    "tipo": "DESPESA",
+    "mes": "NOVEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "telefone - Claro",
+    "valor": 258.29,
+    "tipo": "DESPESA",
+    "mes": "JULHO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "telefone - Claro",
+    "valor": 258.29,
+    "tipo": "DESPESA",
+    "mes": "AGOSTO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "telefone - Claro",
+    "valor": 258.29,
+    "tipo": "DESPESA",
+    "mes": "SETEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "telefone - Claro",
+    "valor": 258.29,
+    "tipo": "DESPESA",
+    "mes": "OUTUBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "telefone - Claro",
+    "valor": 258.29,
+    "tipo": "DESPESA",
+    "mes": "NOVEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Internet",
+    "valor": 115.0,
+    "tipo": "DESPESA",
+    "mes": "JULHO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Internet",
+    "valor": 115.0,
+    "tipo": "DESPESA",
+    "mes": "AGOSTO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Internet",
+    "valor": 115.0,
+    "tipo": "DESPESA",
+    "mes": "SETEMBRO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Internet",
+    "valor": 115.0,
+    "tipo": "DESPESA",
+    "mes": "OUTUBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Internet",
+    "valor": 115.0,
+    "tipo": "DESPESA",
+    "mes": "NOVEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Compras / Cartão Inter",
+    "valor": 1000.0,
+    "tipo": "DESPESA",
+    "mes": "JULHO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Compras / Cartão Inter",
+    "valor": 1223.2,
+    "tipo": "DESPESA",
+    "mes": "AGOSTO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Compras / Cartão Inter",
+    "valor": 1460.42,
+    "tipo": "DESPESA",
+    "mes": "SETEMBRO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Compras / Cartão Inter",
+    "valor": 1200.0,
+    "tipo": "DESPESA",
+    "mes": "OUTUBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Compras / Cartão Inter",
+    "valor": 1200.0,
+    "tipo": "DESPESA",
+    "mes": "NOVEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Salario amor",
+    "valor": 600.0,
+    "tipo": "DESPESA",
+    "mes": "JULHO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Salario amor",
+    "valor": 600.0,
+    "tipo": "DESPESA",
+    "mes": "AGOSTO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Salario amor",
+    "valor": 600.0,
+    "tipo": "DESPESA",
+    "mes": "SETEMBRO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Salario amor",
+    "valor": 600.0,
+    "tipo": "DESPESA",
+    "mes": "OUTUBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Salario amor",
+    "valor": 600.0,
+    "tipo": "DESPESA",
+    "mes": "NOVEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Consultas / Plano",
+    "valor": 440.0,
+    "tipo": "DESPESA",
+    "mes": "JULHO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Consultas / Plano",
+    "valor": 738.25,
+    "tipo": "DESPESA",
+    "mes": "AGOSTO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Consultas / Plano",
+    "valor": 1432.19,
+    "tipo": "DESPESA",
+    "mes": "SETEMBRO",
+    "status": "PAGO"
+  },
+  {
+    "categoria": "Consultas / Plano",
+    "valor": 1476.49,
+    "tipo": "DESPESA",
+    "mes": "OUTUBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Consultas / Plano",
+    "valor": 1476.49,
+    "tipo": "DESPESA",
+    "mes": "NOVEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Transporte publico",
+    "valor": 300.0,
+    "tipo": "DESPESA",
+    "mes": "JULHO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Transporte publico",
+    "valor": 300.0,
+    "tipo": "DESPESA",
+    "mes": "AGOSTO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Transporte publico",
+    "valor": 300.0,
+    "tipo": "DESPESA",
+    "mes": "SETEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Transporte publico",
+    "valor": 300.0,
+    "tipo": "DESPESA",
+    "mes": "OUTUBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Transporte publico",
+    "valor": 300.0,
+    "tipo": "DESPESA",
+    "mes": "NOVEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Saude",
+    "valor": 100.0,
+    "tipo": "DESPESA",
+    "mes": "JULHO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Saude",
+    "valor": 100.0,
+    "tipo": "DESPESA",
+    "mes": "AGOSTO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Saude",
+    "valor": 100.0,
+    "tipo": "DESPESA",
+    "mes": "SETEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Saude",
+    "valor": 100.0,
+    "tipo": "DESPESA",
+    "mes": "OUTUBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Saude",
+    "valor": 100.0,
+    "tipo": "DESPESA",
+    "mes": "NOVEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Lazer",
+    "valor": 200.0,
+    "tipo": "DESPESA",
+    "mes": "JULHO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Lazer",
+    "valor": 200.0,
+    "tipo": "DESPESA",
+    "mes": "AGOSTO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Lazer",
+    "valor": 200.0,
+    "tipo": "DESPESA",
+    "mes": "SETEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Lazer",
+    "valor": 200.0,
+    "tipo": "DESPESA",
+    "mes": "OUTUBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Lazer",
+    "valor": 200.0,
+    "tipo": "DESPESA",
+    "mes": "NOVEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Carro",
+    "valor": 500.0,
+    "tipo": "DESPESA",
+    "mes": "JULHO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Carro",
+    "valor": 500.0,
+    "tipo": "DESPESA",
+    "mes": "AGOSTO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Carro",
+    "valor": 500.0,
+    "tipo": "DESPESA",
+    "mes": "SETEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Carro",
+    "valor": 500.0,
+    "tipo": "DESPESA",
+    "mes": "OUTUBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Carro",
+    "valor": 500.0,
+    "tipo": "DESPESA",
+    "mes": "NOVEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Outros",
+    "valor": 100.0,
+    "tipo": "DESPESA",
+    "mes": "JULHO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Outros",
+    "valor": 100.0,
+    "tipo": "DESPESA",
+    "mes": "AGOSTO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Outros",
+    "valor": 100.0,
+    "tipo": "DESPESA",
+    "mes": "SETEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Outros",
+    "valor": 100.0,
+    "tipo": "DESPESA",
+    "mes": "OUTUBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Outros",
+    "valor": 100.0,
+    "tipo": "DESPESA",
+    "mes": "NOVEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Alimentação",
+    "valor": 800.0,
+    "tipo": "DESPESA",
+    "mes": "JULHO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Alimentação",
+    "valor": 800.0,
+    "tipo": "DESPESA",
+    "mes": "AGOSTO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Alimentação",
+    "valor": 800.0,
+    "tipo": "DESPESA",
+    "mes": "SETEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Alimentação",
+    "valor": 800.0,
+    "tipo": "DESPESA",
+    "mes": "OUTUBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Alimentação",
+    "valor": 800.0,
+    "tipo": "DESPESA",
+    "mes": "NOVEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Educação",
+    "valor": 300.0,
+    "tipo": "DESPESA",
+    "mes": "JULHO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Educação",
+    "valor": 300.0,
+    "tipo": "DESPESA",
+    "mes": "AGOSTO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Educação",
+    "valor": 300.0,
+    "tipo": "DESPESA",
+    "mes": "SETEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Educação",
+    "valor": 300.0,
+    "tipo": "DESPESA",
+    "mes": "OUTUBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Educação",
+    "valor": 300.0,
+    "tipo": "DESPESA",
+    "mes": "NOVEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Vestuário",
+    "valor": 150.0,
+    "tipo": "DESPESA",
+    "mes": "JULHO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Vestuário",
+    "valor": 150.0,
+    "tipo": "DESPESA",
+    "mes": "AGOSTO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Vestuário",
+    "valor": 150.0,
+    "tipo": "DESPESA",
+    "mes": "SETEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Vestuário",
+    "valor": 150.0,
+    "tipo": "DESPESA",
+    "mes": "OUTUBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Vestuário",
+    "valor": 150.0,
+    "tipo": "DESPESA",
+    "mes": "NOVEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Viagem",
+    "valor": 250.0,
+    "tipo": "DESPESA",
+    "mes": "JULHO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Viagem",
+    "valor": 250.0,
+    "tipo": "DESPESA",
+    "mes": "AGOSTO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Viagem",
+    "valor": 250.0,
+    "tipo": "DESPESA",
+    "mes": "SETEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Viagem",
+    "valor": 250.0,
+    "tipo": "DESPESA",
+    "mes": "OUTUBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Viagem",
+    "valor": 250.0,
+    "tipo": "DESPESA",
+    "mes": "NOVEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Presentes",
+    "valor": 50.0,
+    "tipo": "DESPESA",
+    "mes": "JULHO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Presentes",
+    "valor": 50.0,
+    "tipo": "DESPESA",
+    "mes": "AGOSTO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Presentes",
+    "valor": 50.0,
+    "tipo": "DESPESA",
+    "mes": "SETEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Presentes",
+    "valor": 50.0,
+    "tipo": "DESPESA",
+    "mes": "OUTUBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Presentes",
+    "valor": 50.0,
+    "tipo": "DESPESA",
+    "mes": "NOVEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Assinaturas",
+    "valor": 70.0,
+    "tipo": "DESPESA",
+    "mes": "JULHO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Assinaturas",
+    "valor": 70.0,
+    "tipo": "DESPESA",
+    "mes": "AGOSTO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Assinaturas",
+    "valor": 70.0,
+    "tipo": "DESPESA",
+    "mes": "SETEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Assinaturas",
+    "valor": 70.0,
+    "tipo": "DESPESA",
+    "mes": "OUTUBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Assinaturas",
+    "valor": 70.0,
+    "tipo": "DESPESA",
+    "mes": "NOVEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Outros gastos",
+    "valor": 100.0,
+    "tipo": "DESPESA",
+    "mes": "JULHO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Outros gastos",
+    "valor": 100.0,
+    "tipo": "DESPESA",
+    "mes": "AGOSTO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Outros gastos",
+    "valor": 100.0,
+    "tipo": "DESPESA",
+    "mes": "SETEMBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Outros gastos",
+    "valor": 100.0,
+    "tipo": "DESPESA",
+    "mes": "OUTUBRO",
+    "status": "DEVEDOR"
+  },
+  {
+    "categoria": "Outros gastos",
+    "valor": 100.0,
+    "tipo": "DESPESA",
+    "mes": "NOVEMBRO",
+    "status": "DEVEDOR"
+  }
+] Rotas da API
 @app.route('/api/resumo/<mes>', methods=['GET'])
 def get_resumo(mes):
     try:
@@ -44,8 +1036,7 @@ def get_resumo(mes):
 @app.route('/api/transacoes', methods=['GET'])
 def get_transacoes():
     try:
-        mes = request.args.get('mes', 'AGOSTO').upper()
-        transacoes = Transacao.query.filter_by(mes=mes).all()
+      mmes = request.args.get(\'mes\', \'JANEIRO\').upper()       transacoes = Transacao.query.filter_by(mes=mes).all()
         return jsonify([{
             'id': t.id,
             'categoria': t.categoria,
