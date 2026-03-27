@@ -23,9 +23,8 @@ class Transacao(db.Model):
     mes = db.Column(db.String(20), nullable=False)
     status = db.Column(db.String(20), default='A RECEBER')
 
-# Dados Iniciais da Planilha
-INITIAL_DATA_JSON = '''[]'''
-INITIAL_DATA = json.loads(INITIAL_DATA_JSON)
+# Dados Iniciais da Planilha (serão inseridos via script)
+INITIAL_DATA = []
 
 # Rotas da API
 @app.route('/api/resumo/<mes>', methods=['GET'])
@@ -100,6 +99,7 @@ def delete_transacao(id):
         return jsonify({'error': str(e)}), 500
 
 # Inicialização do Banco de Dados
+
 with app.app_context():
     db.create_all()
     if Transacao.query.count() == 0:
@@ -107,6 +107,7 @@ with app.app_context():
             t = Transacao(**item)
             db.session.add(t)
         db.session.commit()
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
