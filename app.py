@@ -24,64 +24,80 @@ class Transacao(db.Model):
     status = db.Column(db.String(20), default='A RECEBER')
 
 # Dados Iniciais da Planilha
-INITIAL_DATA = 
+INITIAL_DATA_JSON = '''[]'''
+INITIAL_DATA = json.loads(INITIAL_DATA_JSON)
 
 # Rotas da API
 @app.route('/api/resumo/<mes>', methods=['GET'])
 def get_resumo(mes):
-    transacoes = Transacao.query.filter_by(mes=mes.upper()).all()
-    receitas = sum(t.valor for t in transacoes if t.tipo == 'RECEITA')
-    despesas = sum(t.valor for t in transacoes if t.tipo == 'DESPESA')
-    return jsonify({
-        'receitas': receitas,
-        'despesas': despesas,
-        'saldo': receitas - despesas
-    })
+    try:
+        transacoes = Transacao.query.filter_by(mes=mes.upper()).all()
+        receitas = sum(t.valor for t in transacoes if t.tipo == 'RECEITA')
+        despesas = sum(t.valor for t in transacoes if t.tipo == 'DESPESA')
+        return jsonify({
+            'receitas': receitas,
+            'despesas': despesas,
+            'saldo': receitas - despesas
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/transacoes', methods=['GET'])
 def get_transacoes():
-    mes = request.args.get('mes', 'AGOSTO').upper()
-    transacoes = Transacao.query.filter_by(mes=mes).all()
-    return jsonify([{
-        'id': t.id,
-        'categoria': t.categoria,
-        'valor': t.valor,
-        'tipo': t.tipo,
-        'mes': t.mes,
-        'status': t.status
-    } for t in transacoes])
+    try:
+        mes = request.args.get('mes', 'AGOSTO').upper()
+        transacoes = Transacao.query.filter_by(mes=mes).all()
+        return jsonify([{
+            'id': t.id,
+            'categoria': t.categoria,
+            'valor': t.valor,
+            'tipo': t.tipo,
+            'mes': t.mes,
+            'status': t.status
+        } for t in transacoes])
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/transacoes', methods=['POST'])
 def add_transacao():
-    data = request.json
-    nova = Transacao(
-        categoria=data['categoria'],
-        valor=data['valor'],
-        tipo=data['tipo'],
-        mes=data['mes'].upper(),
-        status=data.get('status', 'A RECEBER')
-    )
-    db.session.add(nova)
-    db.session.commit()
-    return jsonify({'message': 'Sucesso'}), 201
+    try:
+        data = request.json
+        nova = Transacao(
+            categoria=data['categoria'],
+            valor=data['valor'],
+            tipo=data['tipo'],
+            mes=data['mes'].upper(),
+            status=data.get('status', 'A RECEBER')
+        )
+        db.session.add(nova)
+        db.session.commit()
+        return jsonify({'message': 'Sucesso'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/transacoes/<int:id>', methods=['PUT'])
 def update_transacao(id):
-    t = Transacao.query.get_or_404(id)
-    data = request.json
-    t.categoria = data['categoria']
-    t.valor = data['valor']
-    t.tipo = data['tipo']
-    t.status = data.get('status', t.status)
-    db.session.commit()
-    return jsonify({'message': 'Atualizado'})
+    try:
+        t = Transacao.query.get_or_404(id)
+        data = request.json
+        t.categoria = data['categoria']
+        t.valor = data['valor']
+        t.tipo = data['tipo']
+        t.status = data.get('status', t.status)
+        db.session.commit()
+        return jsonify({'message': 'Atualizado'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/transacoes/<int:id>', methods=['DELETE'])
 def delete_transacao(id):
-    t = Transacao.query.get_or_404(id)
-    db.session.delete(t)
-    db.session.commit()
-    return jsonify({'message': 'Deletado'})
+    try:
+        t = Transacao.query.get_or_404(id)
+        db.session.delete(t)
+        db.session.commit()
+        return jsonify({'message': 'Deletado'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 # Inicialização do Banco de Dados
 with app.app_context():
