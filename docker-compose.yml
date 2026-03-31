@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: finance_manager_db
+    environment:
+      POSTGRES_DB: finance_manager
+      POSTGRES_USER: finance_user
+      POSTGRES_PASSWORD: finance_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U finance_user -d finance_manager"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: finance_manager_app
+    environment:
+      DATABASE_URL: postgresql://finance_user:finance_password@postgres:5432/finance_manager
+      NODE_ENV: development
+      PORT: 3000
+      EXPO_PUBLIC_API_URL: http://localhost:3000/api
+      JWT_SECRET: dev_secret_change_in_production
+      SESSION_SECRET: dev_secret_change_in_production
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev
+
+volumes:
+  postgres_data:
