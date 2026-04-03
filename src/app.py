@@ -21,25 +21,33 @@ def get_github_file(filename):
     """Lê um arquivo JSON do GitHub."""
     try:
         url = f'{GITHUB_API_URL}/repos/{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}/contents/data/{filename}?ref={GITHUB_BRANCH}'
-        headers = {'Authorization': f'token {GITHUB_TOKEN}', 'Accept': 'application/vnd.github.v3.raw'}
+        headers = {
+            'Authorization': f'token {GITHUB_TOKEN}',
+            'Accept': 'application/vnd.github.v3.raw',
+            'User-Agent': 'FinanceApp'
+        }
         response = requests.get(url, headers=headers, timeout=10)
         
         if response.status_code == 200:
             return json.loads(response.text)
         elif response.status_code == 404:
-            return {}
+            return None
         else:
             print(f'Erro ao ler {filename}: {response.status_code}')
-            return {}
+            return None
     except Exception as e:
         print(f'Erro ao ler arquivo do GitHub: {e}')
-        return {}
+        return None
 
 def save_github_file(filename, data):
     """Salva um arquivo JSON no GitHub."""
     try:
         url = f'{GITHUB_API_URL}/repos/{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}/contents/data/{filename}'
-        headers = {'Authorization': f'token {GITHUB_TOKEN}', 'Accept': 'application/vnd.github.v3+json'}
+        headers = {
+            'Authorization': f'token {GITHUB_TOKEN}',
+            'Accept': 'application/vnd.github.v3+json',
+            'User-Agent': 'FinanceApp'
+        }
         
         # Primeiro, tenta obter o arquivo existente para pegar o SHA
         get_response = requests.get(url, headers=headers, timeout=10)
@@ -48,7 +56,8 @@ def save_github_file(filename, data):
             sha = get_response.json().get('sha')
         
         # Codifica o conteúdo em base64
-        content_encoded = base64.b64encode(json.dumps(data, indent=2, ensure_ascii=False).encode()).decode()
+        content_str = json.dumps(data, indent=2, ensure_ascii=False)
+        content_encoded = base64.b64encode(content_str.encode('utf-8')).decode('utf-8')
         
         payload = {
             'message': f'Update {filename} - {datetime.now().isoformat()}',
@@ -62,22 +71,34 @@ def save_github_file(filename, data):
         response = requests.put(url, json=payload, headers=headers, timeout=10)
         
         if response.status_code in [200, 201]:
+            print(f'✓ Arquivo {filename} salvo com sucesso')
             return True
         else:
-            print(f'Erro ao salvar {filename}: {response.status_code} - {response.text}')
+            print(f'✗ Erro ao salvar {filename}: {response.status_code}')
+            print(f'Resposta: {response.text}')
             return False
     except Exception as e:
-        print(f'Erro ao salvar arquivo no GitHub: {e}')
+        print(f'✗ Erro ao salvar arquivo no GitHub: {e}')
         return False
+
+def get_or_create_file(filename, default_data):
+    """Obtém um arquivo ou cria com dados padrão se não existir."""
+    data = get_github_file(filename)
+    if data is None:
+        # Arquivo não existe, cria com dados padrão
+        save_github_file(filename, default_data)
+        return default_data
+    return data
 
 # Endpoints de Configuração
 @app.route('/api/config/nome-planilha', methods=['GET'])
 def get_nome_planilha():
     try:
-        config = get_github_file('config.json')
+        config = get_or_create_file('config.json', {'nome_planilha': 'Meu Orçamento'})
         nome = config.get('nome_planilha', 'Meu Orçamento')
         return jsonify({'nome': nome})
     except Exception as e:
+        print(f'Erro em get_nome_planilha: {e}')
         return jsonify({'nome': 'Meu Orçamento', 'erro': str(e)})
 
 @app.route('/api/config/nome-planilha', methods=['POST'])
@@ -86,7 +107,7 @@ def set_nome_planilha():
         data = request.json
         nome = data.get('nome', 'Meu Orçamento')
         
-        config = get_github_file('config.json')
+        config = get_or_create_file('config.json', {'nome_planilha': 'Meu Orçamento'})
         config['nome_planilha'] = nome
         
         if save_github_file('config.json', config):
@@ -94,15 +115,16 @@ def set_nome_planilha():
         else:
             return jsonify({'erro': 'Erro ao salvar configuração'}), 500
     except Exception as e:
+        print(f'Erro em set_nome_planilha: {e}')
         return jsonify({'erro': str(e)}), 500
 
 # Endpoints de Transações
 @app.route('/api/resumo/<int:ano>/<mes>', methods=['GET'])
 def get_resumo(ano, mes):
     try:
-        transacoes = get_github_file('transacoes.json')
+        transacoes_data = get_or_create_file('transacoes.json', {'items': []})
         transacoes_filtradas = [
-            t for t in transacoes.get('items', [])
+            t for t in transacoes_data.get('items', [])
             if t.get('mes') == mes.upper() and t.get('ano') == ano
         ]
         
@@ -111,6 +133,7 @@ def get_resumo(ano, mes):
         
         return jsonify({'receitas': receitas, 'despesas': despesas, 'saldo': receitas - despesas})
     except Exception as e:
+        print(f'Erro em get_resumo: {e}')
         return jsonify({'erro': str(e)}), 500
 
 @app.route('/api/transacoes', methods=['GET'])
@@ -119,7 +142,7 @@ def get_transacoes():
         mes_param = request.args.get('mes', 'JANEIRO').upper()
         ano_param = request.args.get('ano', 2026, type=int)
         
-        transacoes_data = get_github_file('transacoes.json')
+        transacoes_data = get_or_create_file('transacoes.json', {'items': []})
         transacoes = [
             t for t in transacoes_data.get('items', [])
             if t.get('mes') == mes_param and t.get('ano') == ano_param and t.get('valor', 0) > 0
@@ -127,6 +150,7 @@ def get_transacoes():
         
         return jsonify(transacoes)
     except Exception as e:
+        print(f'Erro em get_transacoes: {e}')
         return jsonify({'erro': str(e)}), 500
 
 @app.route('/api/transacoes', methods=['POST'])
@@ -141,9 +165,9 @@ def criar_transacao():
         num_parcelas = int(data.get('num_parcelas', 1))
         nome_compra = data.get('nome_compra', categoria)
         
-        transacoes_data = get_github_file('transacoes.json')
-        if not transacoes_data:
-            transacoes_data = {'items': []}
+        print(f'Criando transação: {categoria} - R$ {valor} - {tipo}')
+        
+        transacoes_data = get_or_create_file('transacoes.json', {'items': []})
         
         MESES = ["JANEIRO", "FEVEREIRO", "MARCO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"]
         
@@ -166,7 +190,7 @@ def criar_transacao():
                 transacao = {
                     'id': str(uuid.uuid4()),
                     'categoria': categoria,
-                    'valor': valor_parcela,
+                    'valor': round(valor_parcela, 2),
                     'tipo': tipo,
                     'mes': mes_parcela,
                     'ano': ano_parcela,
@@ -175,11 +199,12 @@ def criar_transacao():
                     'data_criacao': datetime.now().isoformat()
                 }
                 transacoes_data['items'].append(transacao)
+                print(f'  → Parcela {i+1}/{num_parcelas}: {mes_parcela}/{ano_parcela}')
         else:
             transacao = {
                 'id': str(uuid.uuid4()),
                 'categoria': categoria,
-                'valor': valor,
+                'valor': round(valor, 2),
                 'tipo': tipo,
                 'mes': mes,
                 'ano': ano,
@@ -188,16 +213,21 @@ def criar_transacao():
             transacoes_data['items'].append(transacao)
         
         if save_github_file('transacoes.json', transacoes_data):
+            print(f'✓ Transação salva com sucesso!')
             return jsonify({'sucesso': True, 'mensagem': 'Transação criada com sucesso!'})
         else:
-            return jsonify({'erro': 'Erro ao salvar transação'}), 500
+            print(f'✗ Erro ao salvar transação no GitHub')
+            return jsonify({'erro': 'Erro ao salvar transação no GitHub'}), 500
     except Exception as e:
+        print(f'✗ Erro em criar_transacao: {e}')
+        import traceback
+        traceback.print_exc()
         return jsonify({'erro': str(e)}), 500
 
 @app.route('/api/transacoes/<transacao_id>', methods=['DELETE'])
 def deletar_transacao(transacao_id):
     try:
-        transacoes_data = get_github_file('transacoes.json')
+        transacoes_data = get_or_create_file('transacoes.json', {'items': []})
         transacoes_data['items'] = [
             t for t in transacoes_data.get('items', [])
             if t.get('id') != transacao_id
@@ -208,6 +238,7 @@ def deletar_transacao(transacao_id):
         else:
             return jsonify({'erro': 'Erro ao deletar transação'}), 500
     except Exception as e:
+        print(f'Erro em deletar_transacao: {e}')
         return jsonify({'erro': str(e)}), 500
 
 # Endpoints de Investimentos
@@ -215,7 +246,7 @@ def deletar_transacao(transacao_id):
 def get_investimentos():
     try:
         ano_param = request.args.get('ano', 2026, type=int)
-        investimentos_data = get_github_file('investimentos.json')
+        investimentos_data = get_or_create_file('investimentos.json', {'items': []})
         investimentos = [
             i for i in investimentos_data.get('items', [])
             if i.get('ano') == ano_param
@@ -227,15 +258,14 @@ def get_investimentos():
         
         return jsonify(investimentos)
     except Exception as e:
+        print(f'Erro em get_investimentos: {e}')
         return jsonify({'erro': str(e)}), 500
 
 @app.route('/api/investimentos', methods=['POST'])
 def criar_investimento():
     try:
         data = request.json
-        investimentos_data = get_github_file('investimentos.json')
-        if not investimentos_data:
-            investimentos_data = {'items': []}
+        investimentos_data = get_or_create_file('investimentos.json', {'items': []})
         
         investimento = {
             'id': str(uuid.uuid4()),
@@ -254,13 +284,14 @@ def criar_investimento():
         else:
             return jsonify({'erro': 'Erro ao salvar investimento'}), 500
     except Exception as e:
+        print(f'Erro em criar_investimento: {e}')
         return jsonify({'erro': str(e)}), 500
 
 @app.route('/api/investimentos/<inv_id>', methods=['PUT'])
 def atualizar_investimento(inv_id):
     try:
         data = request.json
-        investimentos_data = get_github_file('investimentos.json')
+        investimentos_data = get_or_create_file('investimentos.json', {'items': []})
         
         for inv in investimentos_data.get('items', []):
             if inv.get('id') == inv_id:
@@ -272,12 +303,13 @@ def atualizar_investimento(inv_id):
         else:
             return jsonify({'erro': 'Erro ao atualizar investimento'}), 500
     except Exception as e:
+        print(f'Erro em atualizar_investimento: {e}')
         return jsonify({'erro': str(e)}), 500
 
 @app.route('/api/investimentos/<inv_id>', methods=['DELETE'])
 def deletar_investimento(inv_id):
     try:
-        investimentos_data = get_github_file('investimentos.json')
+        investimentos_data = get_or_create_file('investimentos.json', {'items': []})
         investimentos_data['items'] = [
             i for i in investimentos_data.get('items', [])
             if i.get('id') != inv_id
@@ -288,6 +320,7 @@ def deletar_investimento(inv_id):
         else:
             return jsonify({'erro': 'Erro ao deletar investimento'}), 500
     except Exception as e:
+        print(f'Erro em deletar_investimento: {e}')
         return jsonify({'erro': str(e)}), 500
 
 # Endpoints de Metas
@@ -295,7 +328,7 @@ def deletar_investimento(inv_id):
 def get_metas():
     try:
         ano_param = request.args.get('ano', 2026, type=int)
-        metas_data = get_github_file('metas.json')
+        metas_data = get_or_create_file('metas.json', {'items': []})
         metas = [
             m for m in metas_data.get('items', [])
             if m.get('ano') == ano_param
@@ -307,15 +340,14 @@ def get_metas():
         
         return jsonify(metas)
     except Exception as e:
+        print(f'Erro em get_metas: {e}')
         return jsonify({'erro': str(e)}), 500
 
 @app.route('/api/metas', methods=['POST'])
 def criar_meta():
     try:
         data = request.json
-        metas_data = get_github_file('metas.json')
-        if not metas_data:
-            metas_data = {'items': []}
+        metas_data = get_or_create_file('metas.json', {'items': []})
         
         meta = {
             'id': str(uuid.uuid4()),
@@ -335,13 +367,14 @@ def criar_meta():
         else:
             return jsonify({'erro': 'Erro ao salvar meta'}), 500
     except Exception as e:
+        print(f'Erro em criar_meta: {e}')
         return jsonify({'erro': str(e)}), 500
 
 @app.route('/api/metas/<meta_id>', methods=['PUT'])
 def atualizar_meta(meta_id):
     try:
         data = request.json
-        metas_data = get_github_file('metas.json')
+        metas_data = get_or_create_file('metas.json', {'items': []})
         
         for meta in metas_data.get('items', []):
             if meta.get('id') == meta_id:
@@ -353,12 +386,13 @@ def atualizar_meta(meta_id):
         else:
             return jsonify({'erro': 'Erro ao atualizar meta'}), 500
     except Exception as e:
+        print(f'Erro em atualizar_meta: {e}')
         return jsonify({'erro': str(e)}), 500
 
 @app.route('/api/metas/<meta_id>', methods=['DELETE'])
 def deletar_meta(meta_id):
     try:
-        metas_data = get_github_file('metas.json')
+        metas_data = get_or_create_file('metas.json', {'items': []})
         metas_data['items'] = [
             m for m in metas_data.get('items', [])
             if m.get('id') != meta_id
@@ -369,12 +403,20 @@ def deletar_meta(meta_id):
         else:
             return jsonify({'erro': 'Erro ao deletar meta'}), 500
     except Exception as e:
+        print(f'Erro em deletar_meta: {e}')
         return jsonify({'erro': str(e)}), 500
 
 # Health check
 @app.route('/api/health', methods=['GET'])
 def health():
-    return jsonify({'status': 'ok', 'database': 'github', 'github_token': 'configured' if GITHUB_TOKEN else 'missing'})
+    github_status = 'configured' if GITHUB_TOKEN else 'missing'
+    return jsonify({
+        'status': 'ok',
+        'database': 'github',
+        'github_token': github_status,
+        'timestamp': datetime.now().isoformat()
+    })
 
 if __name__ == '__main__':
+    print(f'Iniciando servidor com GitHub Token: {"configurado" if GITHUB_TOKEN else "NÃO CONFIGURADO"}')
     app.run(debug=False, host='0.0.0.0', port=5000)
